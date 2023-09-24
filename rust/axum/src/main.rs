@@ -1,4 +1,5 @@
-use axum::{extract::Query, response::IntoResponse, routing::get, Router};
+use axum::{response::IntoResponse, routing::get, Router};
+use axum_extra::extract::Query;
 use serde::{Deserialize, Serialize};
 
 #[tokio::main]
@@ -27,7 +28,7 @@ struct Post {
 
 #[derive(Debug, Serialize)]
 struct JsonResponse {
-    user_id: u32,
+    user_id: String,
     username: String,
     email: String,
     first_name: String,
@@ -38,7 +39,7 @@ struct JsonResponse {
 
 #[derive(Deserialize)]
 struct QueryInput {
-    user_list: Vec<u32>,
+    user_list: Vec<String>,
 }
 
 async fn json_serialize(Query(query): Query<QueryInput>) -> impl IntoResponse {
@@ -63,7 +64,7 @@ async fn json_serialize(Query(query): Query<QueryInput>) -> impl IntoResponse {
 
     for v in query.user_list {
         users.push(JsonResponse {
-            user_id: v,
+            user_id: v.clone(),
             username: format!("Username{v}"),
             email: format!("email{v}@something.com"),
             first_name: format!("FirstName{v}"),
